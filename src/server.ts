@@ -1,14 +1,25 @@
 import express, { Application, Request, Response } from "express";
-
+import { dbConnection } from "./database/connection";
+import cors from "cors";
+import usuarioRoutes from "./routes/usuario.route";
+import productoRoutes from "./routes/producto.route";
 class Server {
   private app: Application;
   private port: string;
-  private apiPaths = {};
+  private apiPaths = {
+    usuario: "/api/v1/usuario",
+    producto: "/api/v1/producto",
+  };
 
   constructor() {
     this.app = express();
-    this.port = "3000";
-    this.miPrimerApi();
+    this.port = process.env.PORT || "3000";
+    // Base de datos
+    dbConnection();
+    //Metodos iniciales
+    this.middlewares();
+    //Rutas()
+    this.routes();
   }
 
   miPrimerApi() {
@@ -16,6 +27,18 @@ class Server {
       res.status(200).json({ msg: "Api funcionando" })
     );
   }
+
+  middlewares() {
+    this.app.use(cors());
+    //Lectura del Body
+    this.app.use(express.json());
+    this.miPrimerApi();
+  }
+  routes(): void {
+    this.app.use(this.apiPaths.usuario, usuarioRoutes);
+    this.app.use(this.apiPaths.producto, productoRoutes);
+  }
+
   listen(): void {
     this.app.listen(this.port, () => {
       console.log("servidor corriendo por el puerto", this.port);
