@@ -3,12 +3,14 @@ import { dbConnection } from "./database/connection";
 import cors from "cors";
 import usuarioRoutes from "./routes/usuario.route";
 import productoRoutes from "./routes/producto.route";
+import authRoutes from "./routes/auth.route";
 class Server {
   private app: Application;
   private port: string;
   private apiPaths = {
     usuario: "/api/v1/usuario",
     producto: "/api/v1/producto",
+    login: "api/v1/login",
   };
 
   constructor() {
@@ -37,6 +39,7 @@ class Server {
   routes(): void {
     this.app.use(this.apiPaths.usuario, usuarioRoutes);
     this.app.use(this.apiPaths.producto, productoRoutes);
+    this.app.use(this.apiPaths.login, authRoutes);
   }
 
   listen(): void {
