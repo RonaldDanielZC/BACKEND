@@ -4,13 +4,16 @@ import cors from "cors";
 import usuarioRoutes from "./routes/usuario.route";
 import productoRoutes from "./routes/producto.route";
 import authRoutes from "./routes/auth.route";
+import interaccionRoutes from "./routes/interaccion.route";
+import interaccionRoute from "./routes/interaccion.route";
 class Server {
   private app: Application;
   private port: string;
   private apiPaths = {
     usuario: "/api/v1/usuario",
     producto: "/api/v1/producto",
-    login: "api/v1/login",
+    login: "/api/v1/login",
+    interaccion: "/api/v1/interaccion",
   };
 
   constructor() {
@@ -40,6 +43,7 @@ class Server {
     this.app.use(this.apiPaths.usuario, usuarioRoutes);
     this.app.use(this.apiPaths.producto, productoRoutes);
     this.app.use(this.apiPaths.login, authRoutes);
+    this.app.use(this.apiPaths.interaccion, interaccionRoutes);
   }
 
   listen(): void {

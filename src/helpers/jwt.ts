@@ -3,8 +3,8 @@ const jwt = require("jsonwebtoken");
 const generateJWT = (
   _id: string,
   email: string = "",
-  expiresIN = "12h",
-  jwtSecret = "Leones123456*#"
+  expiresIn = "12h",
+  jwtSecret = process.env.JWTSECRET
 ) => {
   return new Promise((resolve, reject) => {
     const payload = {
@@ -15,7 +15,7 @@ const generateJWT = (
       payload,
       jwtSecret,
       {
-        expiresIN: expiresIN,
+        expiresIn: expiresIn,
       },
       (error: string, token: string) => {
         if (error) {

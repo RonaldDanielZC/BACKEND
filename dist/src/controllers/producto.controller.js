@@ -16,8 +16,9 @@ exports.productoEliminado = exports.updateProducto = exports.getunProducto = exp
 const producto_model_1 = __importDefault(require("../models/producto.model"));
 const crearProducto = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
+    const id = req._id;
     try {
-        const newProducto = new producto_model_1.default(Object.assign({}, body));
+        const newProducto = new producto_model_1.default(Object.assign({ usuario: id }, body));
         const productoCreado = yield newProducto.save();
         res.status(200).json({
             ok: true,
@@ -37,13 +38,17 @@ const crearProducto = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.crearProducto = crearProducto;
 const getProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const productos = yield producto_model_1.default.find();
+        const productos = yield producto_model_1.default.find().populate({
+            path: "usuario",
+            select: "nombre ",
+        });
         res.json({
             ok: true,
             productos: productos,
         });
     }
     catch (error) {
+        console.error(error);
         res.status(400).json({
             ok: false,
             msg: "Error al consultar los usuarios",

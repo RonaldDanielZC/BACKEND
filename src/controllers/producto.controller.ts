@@ -1,12 +1,12 @@
 import { Response, Request } from "express";
 import ProductoModel from "../models/producto.model";
+import { CustomRequest } from "../middlewares/validate-jwt";
 
-export const crearProducto = async (req: Request, res: Response) => {
+export const crearProducto = async (req: CustomRequest, res: Response) => {
   const { body } = req;
+  const id = req._id;
   try {
-    const newProducto = new ProductoModel({
-      ...body,
-    });
+    const newProducto = new ProductoModel({ usuario: id, ...body });
 
     const productoCreado = await newProducto.save();
 
@@ -26,15 +26,20 @@ export const crearProducto = async (req: Request, res: Response) => {
 };
 export const getProductos = async (req: Request, res: Response) => {
   try {
-    const productos = await ProductoModel.find();
+    const productos = await ProductoModel.find().populate({
+      path: "usuario",
+      select: "nombre ",
+    });
 
     res.json({
       ok: true,
       productos: productos,
     });
   } catch (error) {
+    console.error(error);
     res.status(400).json({
       ok: false,
+
       msg: "Error al consultar los usuarios",
     });
   }
